@@ -1,0 +1,4 @@
+if (/^List-Id:.*szluug.lists.szluug.org.*/)
+{
+	to $DEFAULT/.ML.szluug-org.szluug
+}
