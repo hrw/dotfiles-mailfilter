@@ -3,49 +3,44 @@ logfile "$HOME/mailfilter.log"
 # mails from mailman -> inbox
 if (/^X-List-Administrivia: yes/)
 {
-	to $DEFAULT
+    to $DEFAULT
 }
 
 # Mailing list automagic
 if ( \
-		/^List-Id:.*<([0-9A-Za-z_\-]+)\.(lists\.)?(.*)>/ \
+        /^List-Id:.*<([0-9A-Za-z_\-]+)\.(lists\.)?(.*)>/ \
 )
 #     if (    (/^List-Id:.*<[a-zA-Z0-9_\-]+!./) \
 #          || (/^Mailing-List:.* ![a-zA-Z0-9_\-]+!-owner@/) \
 #          || (/^X-list: ![a-zA-Z0-9_\-]+/) \
 #          || (/^List-Id: ![a-zA-Z0-9_\-]+!./) \
 #        )
+{
+    LISTNAME=tolower($MATCH1)
+
+    # convert server name from dots to hyphens
+    foreach ($MATCH3) =~ /[^.]+/
+    { 
+        LISTDOMAIN="${LISTDOMAIN}-${MATCH}"
+    }
+    LISTDOMAIN=substr($LISTDOMAIN, 1)
+
+    DESTDIR="$DEFAULT/.ML.$LISTDOMAIN.$LISTNAME"
+    DESTDOMAINDIR="$DEFAULT/.ML.$LISTDOMAIN"
+
+    `test -d $DESTDIR`
+    if ( $RETURNCODE == 1 )
     {
-        LISTNAME=tolower($MATCH1)
-
-		# convert server name from dots to hyphens
-		foreach ($MATCH3) =~ /[^.]+/
-		{ 
-			LISTDOMAIN="${LISTDOMAIN}-${MATCH}"
-		}
-		LISTDOMAIN=substr($LISTDOMAIN, 1)
-
-        DESTDIR="$DEFAULT/.ML.$LISTDOMAIN.$LISTNAME"
-        DESTDOMAINDIR="$DEFAULT/.ML.$LISTDOMAIN"
-
-        `test -d $DESTDIR`
+        `test -d $DESTDOMAINDIR`
         if ( $RETURNCODE == 1 )
         {
-			`test -d $DESTDOMAINDIR`
-			if ( $RETURNCODE == 1 )
-			{
-				log "ML magic - $DESTDOMAINDIR does not exist"
-				log "Creating List dir"
-				`maildirmake -f ML.$LISTDOMAIN  $DEFAULT`
-			}
-            log "ML magic - $DESTDIR does not exist"
-			log "Creating List dir"
-			`maildirmake -f ML.$LISTDOMAIN.$LISTNAME  $DEFAULT`
-            to $DESTDIR
+            `maildirmake -f ML.$LISTDOMAIN  $DEFAULT`
         }
-        else
-        {
-            log "ML magic - to $DESTDIR"
-            to $DESTDIR
-        }
+        `maildirmake -f ML.$LISTDOMAIN.$LISTNAME  $DEFAULT`
+        to $DESTDIR
     }
+    else
+    {
+        to $DESTDIR
+    }
+}
