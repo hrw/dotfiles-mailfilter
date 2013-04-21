@@ -1,8 +1,3 @@
-if (/^List-Id:.*szluug.lists.szluug.org.*/)
-{
-	to $DEFAULT/.ML.szluug-org.szluug
-}
-
 # Mailing list automagic
 if ( /^List-Id:.*<([0-9A-Za-z_\-]+)\.(lists\.)?(.*)>/ )
 #     if (    (/^List-Id:.*<[a-zA-Z0-9_\-]+!./) \
