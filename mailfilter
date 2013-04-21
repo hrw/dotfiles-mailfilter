@@ -2,3 +2,28 @@ if (/^List-Id:.*szluug.lists.szluug.org.*/)
 {
 	to $DEFAULT/.ML.szluug-org.szluug
 }
+
+# Mailing list automagic
+if ( /^List-Id:.*<([0-9A-Za-z_\-]+)\.(lists\.)?(.*)>/ )
+#     if (    (/^List-Id:.*<[a-zA-Z0-9_\-]+!./) \
+#          || (/^Mailing-List:.* ![a-zA-Z0-9_\-]+!-owner@/) \
+#          || (/^X-list: ![a-zA-Z0-9_\-]+/) \
+#          || (/^List-Id: ![a-zA-Z0-9_\-]+!./) \
+#        )
+    {
+        LISTNAME=tolower($MATCH1)
+		LISTSERVER=tolower($MATCH3)
+        DESTDIR="$DEFAULT/.ML.$LISTSERVER.$LISTNAME"
+        `test -d $DESTDIR`
+        if ( $RETURNCODE == 1 )
+        {
+            log "ML magic - $DESTDIR does not exist"
+            #log "Creating List dir"
+            #`maildirmake -f Spam ./Maildir`
+        }
+        else
+        {
+            log "ML magic - to $DESTDIR"
+            to $DESTDIR
+        }
+    }
