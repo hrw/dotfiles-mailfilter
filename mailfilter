@@ -1,3 +1,9 @@
+# mails from mailman -> inbox
+if (/^X-List-Administrivia: yes/)
+{
+	to $DEFAULT
+}
+
 # Mailing list automagic
 if ( \
 		/^List-Id:.*<([0-9A-Za-z_\-]+)\.(lists\.)?(.*)>/ \
