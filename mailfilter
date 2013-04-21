@@ -1,3 +1,5 @@
+logfile "$HOME/mailfilter.log"
+
 # mails from mailman -> inbox
 if (/^X-List-Administrivia: yes/)
 {
@@ -24,13 +26,22 @@ if ( \
 		LISTDOMAIN=substr($LISTDOMAIN, 1)
 
         DESTDIR="$DEFAULT/.ML.$LISTDOMAIN.$LISTNAME"
+        DESTDOMAINDIR="$DEFAULT/.ML.$LISTDOMAIN"
 
         `test -d $DESTDIR`
         if ( $RETURNCODE == 1 )
         {
+			`test -d $DESTDOMAINDIR`
+			if ( $RETURNCODE == 1 )
+			{
+				log "ML magic - $DESTDOMAINDIR does not exist"
+				log "Creating List dir"
+				`maildirmake -f ML.$LISTDOMAIN  $DEFAULT`
+			}
             log "ML magic - $DESTDIR does not exist"
-            #log "Creating List dir"
-            #`maildirmake -f Spam ./Maildir`
+			log "Creating List dir"
+			`maildirmake -f ML.$LISTDOMAIN.$LISTNAME  $DEFAULT`
+            to $DESTDIR
         }
         else
         {
