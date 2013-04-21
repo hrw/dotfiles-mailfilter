@@ -1,5 +1,7 @@
 # Mailing list automagic
-if ( /^List-Id:.*<([0-9A-Za-z_\-]+)\.(lists\.)?(.*)>/ )
+if ( \
+		/^List-Id:.*<([0-9A-Za-z_\-]+)\.(lists\.)?(.*)>/ \
+)
 #     if (    (/^List-Id:.*<[a-zA-Z0-9_\-]+!./) \
 #          || (/^Mailing-List:.* ![a-zA-Z0-9_\-]+!-owner@/) \
 #          || (/^X-list: ![a-zA-Z0-9_\-]+/) \
@@ -7,8 +9,16 @@ if ( /^List-Id:.*<([0-9A-Za-z_\-]+)\.(lists\.)?(.*)>/ )
 #        )
     {
         LISTNAME=tolower($MATCH1)
-		LISTSERVER=tolower($MATCH3)
-        DESTDIR="$DEFAULT/.ML.$LISTSERVER.$LISTNAME"
+
+		# convert server name from dots to hyphens
+		foreach ($MATCH3) =~ /[^.]+/
+		{ 
+			LISTDOMAIN="${LISTDOMAIN}-${MATCH}"
+		}
+		LISTDOMAIN=substr($LISTDOMAIN, 1)
+
+        DESTDIR="$DEFAULT/.ML.$LISTDOMAIN.$LISTNAME"
+
         `test -d $DESTDIR`
         if ( $RETURNCODE == 1 )
         {
