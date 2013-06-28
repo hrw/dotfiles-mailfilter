@@ -28,7 +28,7 @@ if ( \
     # do not create toplevel folder for each github project
     if ( /^List-Id:.*github.com>/ )
     {
-        LISTDOMAIN="github.com"
+        LISTDOMAIN="github-com"
     }
 
     DESTDIR="$DEFAULT/.ML.$LISTDOMAIN.$LISTNAME"
