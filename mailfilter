@@ -18,6 +18,12 @@ if ( \
 {
     LISTNAME=tolower($MATCH1)
 
+    # get rid of /.ML..
+    if ( ! $LISTNAME )
+    {
+		to $DEFAULT
+    }
+
     # convert server name from dots to hyphens
     foreach ($MATCH3) =~ /[^.]+/
     { 
@@ -50,3 +56,5 @@ if ( \
         to $DESTDIR
     }
 }
+
+to $DEFAULT
