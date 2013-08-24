@@ -7,6 +7,13 @@ if (/^X-List-Administrivia: yes/)
 }
 
 if ( \
+		/^From:.*<noreply-.*@plus.google.com>/ \
+)
+{
+	to $DEFAULT/.Powiadomienia.Google+
+}
+
+if ( \
 		/^From:.*<ingress-support@google.com>/ \
 	||	/^From:.*super-ops@google.com/ \
 )
