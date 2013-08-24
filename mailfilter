@@ -6,6 +6,14 @@ if (/^X-List-Administrivia: yes/)
     to $DEFAULT
 }
 
+if ( \
+		/^From:.*<ingress-support@google.com>/ \
+	||	/^From:.*super-ops@google.com/ \
+)
+{
+	to $DEFAULT/.Powiadomienia.Ingress
+}
+
 # Mailing list automagic
 if ( \
         /^List-Id:.*<([0-9A-Za-z_\-]+)\.(list[sy]\.)?(.*)>/ \
